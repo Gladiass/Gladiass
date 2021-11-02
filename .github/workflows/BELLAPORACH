@@ -1,0 +1,524 @@
+import requests
+import time
+
+
+def flip(auction, val, item, addonlist):
+    print(time.time() - auction["start"] / 1000)
+    print("/viewauction " + auction["uuid"] + "\n Item Name: " + auction["item_name"] + "\n Price: " + str(
+        auction["starting_bid"]) + "\n Potential Profit: " + str(
+        val - auction["starting_bid"]) + "\n Price for Clean: " + str(items[item]["norm"]))
+    if val != items[item]["norm"]:
+        print("Expected Value: " + str(val))
+    if addonlist != "":
+        print(addonlist)
+    print("\n")
+
+
+def petflip(auction, val, pet):
+    print(time.time() - auction["start"] / 1000)
+    print("/viewauction " + auction["uuid"] + "\n Pet Name: " + auction["item_name"] + "\n Price: " + str(
+        auction["starting_bid"]) + "\n Potential Profit: " + str(
+        val - auction["starting_bid"]) + "\n Level 1 Price: " + str(pets[pet]["0"]) + "\n")
+    if auction["item_lore"].count("Pet Candy Used") > 0:
+        print("CANDIED PET\n")
+
+
+check = False
+
+
+def value(auction, item, rarity):
+    addonlist = ""
+    val = items[item][rarity]
+    for addon in modifiers:
+        if auction["item_lore"].lower().count(addon.lower()) > 0:
+            val = val + modifiers[addon]
+            addonlist += addon + " "
+    return val, addonlist
+
+
+# an infinite loop asking for the item
+linkAH = "https://api.hypixel.net/skyblock/auctions?key=62a09650-2912-4036-abd8-0c52deee9ca5&page="
+items = {
+    "aspect of the dragons": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "adaptive chestplate": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "adaptive leggings": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "adaptive helm": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "bonzo's staff": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "flower of truth": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "frozen blaze helmet": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "frozen blaze chestplate": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "frozen blaze leggings": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "frozen blaze boots": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "frozen scythe": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "giant's sword": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "livid dagger": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "necromancer lord helmet": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "necromancer lord chestplate": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "necromancer lord leggings": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "necromancer lord boots": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "necron's boots": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "necron's leggings": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "necron's chestplate": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "necron's helmet": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "reaper scythe": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "shadow assassin helmet": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "shadow assassin chestplate": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "shadow assassin leggings": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "shadow assassin boots": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "shadow fury": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "spirit sceptre": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "storm's boots": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "storm's leggings": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "storm's chestplate": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "storm's helmet": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "superior dragon chestplate": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "superior dragon leggings": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "superior dragon helmet": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "superior dragon boots": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "wither boots": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "wither leggings": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "wither chestplate": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "wither helmet": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "hyperion": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "valkyrie": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "scylla": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "astraea": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "juju shortbow": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "bonemerang": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "warden helmet": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "daedalus axe": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "axe of the shredded": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    },
+    "terminator": {
+        "norm": 1000000000,
+        "starred": 1000000000
+    }
+}
+
+pets = {
+    "] Elephant": {
+        "100": 1000000000,
+        "90": 1000000000,
+        "50": 1000000000,
+        "0": 1000000000
+    },
+    "] Rabbit": {
+        "100": 1000000000,
+        "90": 1000000000,
+        "50": 1000000000,
+        "0": 1000000000
+    },
+    "] Armadillo": {
+        "100": 1000000000,
+        "90": 1000000000,
+        "50": 1000000000,
+        "0": 1000000000
+    },
+    "] Endermite": {
+        "100": 1000000000,
+        "90": 1000000000,
+        "50": 1000000000,
+        "0": 1000000000
+    },
+    "] Rock": {
+        "100": 1000000000,
+        "90": 1000000000,
+        "50": 1000000000,
+        "0": 1000000000
+    },
+    "] Wither Skeleton": {
+        "100": 1000000000,
+        "90": 1000000000,
+        "50": 1000000000,
+        "0": 1000000000
+    },
+    "] Bal": {
+        "100": 1000000000,
+        "90": 1000000000,
+        "50": 1000000000,
+        "0": 1000000000
+    },
+    "] Black Cat": {
+        "100": 1000000000,
+        "90": 1000000000,
+        "50": 1000000000,
+        "0": 1000000000
+    },
+    "] Blaze": {
+        "100": 1000000000,
+        "90": 1000000000,
+        "50": 1000000000,
+        "0": 1000000000
+    },
+    "] Ender Dragon": {
+        "100": 1000000000,
+        "90": 1000000000,
+        "50": 1000000000,
+        "0": 1000000000
+    },
+    "] Enderman": {
+        "100": 1000000000,
+        "90": 1000000000,
+        "50": 1000000000,
+        "0": 1000000000
+    },
+    "] Griffin": {
+        "100": 1000000000,
+        "90": 1000000000,
+        "50": 1000000000,
+        "0": 1000000000
+    },
+    "] Hound": {
+        "100": 1000000000,
+        "90": 1000000000,
+        "50": 1000000000,
+        "0": 1000000000
+    },
+    "] Rat": {
+        "100": 1000000000,
+        "90": 1000000000,
+        "50": 1000000000,
+        "0": 1000000000
+    },
+    "] Tarantula": {
+        "100": 1000000000,
+        "90": 1000000000,
+        "50": 1000000000,
+        "0": 1000000000
+    },
+    "] Wolf": {
+        "100": 1000000000,
+        "90": 1000000000,
+        "50": 1000000000,
+        "0": 1000000000
+    },
+    "] Giraffe": {
+        "100": 1000000000,
+        "90": 1000000000,
+        "50": 1000000000,
+        "0": 1000000000
+    },
+    "] Lion": {
+        "100": 1000000000,
+        "90": 1000000000,
+        "50": 1000000000,
+        "0": 1000000000
+    },
+    "] Monkey": {
+        "100": 1000000000,
+        "90": 1000000000,
+        "50": 1000000000,
+        "0": 1000000000
+    },
+    "] Ocelot": {
+        "100": 1000000000,
+        "90": 1000000000,
+        "50": 1000000000,
+        "0": 1000000000
+    },
+    "] Baby Yeti": {
+        "100": 1000000000,
+        "90": 1000000000,
+        "50": 1000000000,
+        "0": 1000000000
+    },
+    "] Blue Whale": {
+        "100": 1000000000,
+        "90": 1000000000,
+        "50": 1000000000,
+        "0": 1000000000
+    },
+    "] Dolphin": {
+        "100": 1000000000,
+        "90": 1000000000,
+        "50": 1000000000,
+        "0": 1000000000
+    },
+    "] Flying Fish": {
+        "100": 1000000000,
+        "90": 1000000000,
+        "50": 1000000000,
+        "0": 1000000000
+    },
+    "] Squid": {
+        "100": 1000000000,
+        "90": 1000000000,
+        "50": 1000000000,
+        "0": 1000000000
+    }
+}
+
+modifiers = {
+    "Soul Eater V": 17600000,
+    "Legion III": 6000000,
+    "Legion IV": 4500000,
+    "Legion V": 12000000,
+    "Swarm V": 8320000,
+    "§d§l§ka§r": 3000000,
+    "Renowned": 4500000,
+    "Growth VII": 125000000,
+    "Growth VI": 5000000,
+    "Jaded": 10000000,
+    "Big Brain V": 72000000,
+    "Expertise X": 8000000,
+    "One For All": 10700000,
+    "Protection VII": 79700000,
+    "Blast Protection VII": 6000000,
+    "Fire Protection VII": 7500000,
+    "Projectile Protection VII": 4250000,
+    "Rejuvenate V": 480000,
+    "Ultimate Wise V": 3200000,
+    "Chimera I": 93100000,
+
+
+}
+cont = True
+numb = 0
+time0 = time.time()
+# for loop loops 30 times for 30 pages
+try:
+    while cont:
+        numb += 1
+        # to get the link for page and request data
+        link = linkAH + str(numb)
+        data = requests.get(link).json()
+        # makes list of all data
+        auctions = data["auctions"]
+        # for each item in the data
+        replit.clear()
+        print(numb)
+        for auction in auctions:
+            try:
+                for item in items:
+                    if "bin" in auction and item.lower() in auction["item_name"].lower():
+                        if auction["item_name"].count("\u272a") == 5:
+                            if auction["starting_bid"] < items[item]["starred"]:
+                                items[item]["starred"] = auction["starting_bid"]
+                        else:
+                            if auction["starting_bid"] < items[item]["norm"]:
+                                items[item]["norm"] = auction["starting_bid"]
+                level = 0
+                for pet in pets:
+                    if "bin" in auction and pet.lower() in auction["item_name"].lower() and auction[
+                        "tier"] == "LEGENDARY":
+                        level = int(
+                            auction["item_name"][auction["item_name"].index(" ") + 1:auction["item_name"].index("]")])
+                        if level == 100 and auction["starting_bid"] < pets[pet]["100"]:
+                            pets[pet]["100"] = auction["starting_bid"]
+                        if 100 > level < 90 and auction["starting_bid"] < pets[pet]["90"]:
+                            pets[pet]["90"] = auction["starting_bid"]
+                        if level <= 90 and level > 50 and auction["starting_bid"] < pets[pet]["50"]:
+                            pets[pet]["50"] = auction["starting_bid"]
+                        if level <= 50 and auction["starting_bid"] < pets[pet]["0"]:
+                            pets[pet]["0"] = auction["starting_bid"]
+            except Exception as e:
+                print(e)
+except Exception as g:
+    print(g)
+    cont = False
+time1 = time.time()
+replit.clear()
+print(time1 - time0)
+rarity = ""
+for i in range(2000000):
+    for i in range(50):
+        # to get the link for page and request data
+        link = linkAH + str(i)
+        data = requests.get(link).json()
+        # makes list of all data
+        auctions = data["auctions"]
+        # for each item in the data
+        addonlist = ""
+        for auction in auctions:
+            if time.time() - auction["start"] / 1000 < 60:
+                try:
+                    l = ""
+                    for item in items:
+
+                        if "bin" in auction and item.lower() in auction["item_name"].lower():
+                            if auction["item_name"].count("\u272a") == 5:
+                                rarity = "starred"
+                            else:
+                                rarity = "norm"
+                            val, addonlist = value(auction, item, rarity)
+                            if ((items[item][rarity] - auction["starting_bid"]) * 100 / items[item][rarity] > 10) and \
+                                    items[item][rarity] - auction["starting_bid"] > 250000:
+                                flip(auction, val, item, addonlist)
+                            if auction["starting_bid"] < items[item][rarity]:
+                                items[item][rarity] = auction["starting_bid"]
+                    for pet in pets:
+                        if "bin" in auction and pet.lower() in auction["item_name"].lower() and auction[
+                            "tier"] == "LEGENDARY":
+                            level = int(auction["item_name"][
+                                        auction["item_name"].index(" ") + 1:auction["item_name"].index("]")])
+                            if level == 100:
+                                l = "100"
+                            elif level > 90:
+                                l = "90"
+                            elif level > 50:
+                                l = "50"
+                            else:
+                                l = "0"
+                            if 100 * (pets[pet][l] - auction["starting_bid"]) / pets[pet][l] > 10 and pets[pet][l] - \
+                                    auction["starting_bid"] > 250000:
+                                if level == 100 and auction["starting_bid"] < pets[pet]["100"]:
+                                    petflip(auction, pets[pet][l], pet)
+                                    pets[pet]["100"] = auction["starting_bid"]
+                                if level > 90 and auction["starting_bid"] < pets[pet]["90"]:
+                                    petflip(auction, pets[pet][l], pet)
+                                    pets[pet]["90"] = auction["starting_bid"]
+                                elif level > 50 and auction["starting_bid"] < pets[pet]["50"]:
+                                    petflip(auction, pets[pet][l], pet)
+                                    pets[pet]["50"] = auction["starting_bid"]
+                                else:
+                                    petflip(auction, pets[pet][l], pet)
+                                    pets[pet]["0"] = auction["starting_bid"]
+                except Exception as e:
+                    print(e)
+
